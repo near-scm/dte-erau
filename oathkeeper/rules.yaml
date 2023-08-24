@@ -1,0 +1,83 @@
+# This file is part of DTE-ERAU. Copyright 2023 Embry-Riddle Aeronautical University
+#
+# DTE-ERAU is free software: you can redistribute it and/or modify it under the terms of the GNU 
+# General Public License as published by the Free Software Foundation, either version 3 of the License, or 
+# (at your option) any later version.
+#
+# DTE-ERAU is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with DTE-ERAU. If not, see 
+# <https://www.gnu.org/licenses/>. 
+
+- id: hc
+  version: v0.36.0-beta.4
+  upstream:
+    url: http://10.142.0.3/
+    preserve_host: true
+  match:
+    url: http://<\d+\.\d+\.\d+\.\d+>/hc
+    methods:
+      - GET
+      - POST
+  authenticators:
+    - handler: noop
+  authorizer:
+    handler: allow
+  mutators:
+    - handler: noop
+  errors:
+    - handler: json
+- id: wsw
+  version: v0.36.0-beta.4
+  upstream:
+    url: http://wsw_proxy:9992/
+    preserve_host: true
+  match:
+    url: http<s?>://near.flights/ws
+    methods:
+      - GET
+      - POST
+  authenticators:
+    - handler: noop
+  authorizer:
+    handler: remote_json
+    config:
+    remote: http://pdp:9990/auth
+    payload: |
+      {
+        "resource_group": "web",
+        "resource": "{{ printIndex .MatchContext.RegexpCaptureGroups 1 }}",
+        "user": "{{ .MatchContext.Header.Get "x-goog-authenticated-user-id" }}"
+      }
+  mutators:
+    - handler: noop
+  errors:
+    - handler: json
+- id: nfo_backend
+  version: v0.36.0-beta.4
+  upstream:
+    url: http://10.142.0.3/
+    preserve_host: true
+  match:
+    url: http<s?>://near.flights/<(?!ws$).*>
+    methods:
+      - GET
+      - POST
+  authenticators:
+    - handler: noop
+  authorizer:
+    handler: remote_json
+    config:
+    remote: http://pdp:9990/auth
+    payload: |
+      {
+        "resource_group": "web",
+        "resource": "{{ printIndex .MatchContext.RegexpCaptureGroups 1 }}",
+        "user": "{{ .MatchContext.Header.Get "x-goog-authenticated-user-id" }}"
+      }
+  mutators:
+    - handler: noop
+  errors:
+    - handler: json

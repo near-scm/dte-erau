@@ -1,0 +1,66 @@
+# This file is part of DTE-ERAU. Copyright 2023 Embry-Riddle Aeronautical University
+#
+# DTE-ERAU is free software: you can redistribute it and/or modify it under the terms of the GNU 
+# General Public License as published by the Free Software Foundation, either version 3 of the License, or 
+# (at your option) any later version.
+#
+# DTE-ERAU is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with DTE-ERAU. If not, see 
+# <https://www.gnu.org/licenses/>. 
+
+version: "3.9"
+services:
+  oathkeeper:
+    image: oryd/oathkeeper
+    command: --config /config/config.yaml serve
+    volumes:
+      - ./oathkeeper:/config/:ro
+    ports:
+      - "80:4455"  # The proxy port that the client will enter before the request, poentially, goes through to the actual backend
+      # - "4456:4456"  # API Port
+    restart: on-failure
+  pdp:
+    build: pdp/.
+    environment:
+      - PYTHONUNBUFFERED=0
+    volumes:
+      - ./pdp:/usr/src/app/:ro
+  dte:
+    build: dte/.
+    environment:
+      - PYTHONUNBUFFERED=0
+    volumes:
+      - ./dte:/usr/src/app/:ro
+    # ports:
+    #   - "9991:9991"  # Testing port
+  wsw_proxy:
+    build: wsw_proxy/.
+    environment:
+      - PYTHONUNBUFFERED=0
+    volumes:
+      - ./wsw_proxy:/usr/src/app/:ro
+  google_tscp:
+    build: tscp/.
+    depends_on:
+      - dte
+    environment:
+      - PYTHONUNBUFFERED=0
+      - NAME=google
+      - FILE=tscp/google.yaml
+      - PORT=9999
+    volumes:
+      - ./tscp:/usr/src/app/:ro
+  near_tscp:
+    build: tscp/.
+    depends_on:
+      - dte
+    environment:
+      - PYTHONUNBUFFERED=0
+      - NAME=near
+      - FILE=tscp/near.yaml
+      - PORT=9998
+    volumes:
+      - ./tscp:/usr/src/app/:ro

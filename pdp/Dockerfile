@@ -1,0 +1,19 @@
+# This file is part of DTE-ERAU. Copyright 2023 Embry-Riddle Aeronautical University
+#
+# DTE-ERAU is free software: you can redistribute it and/or modify it under the terms of the GNU 
+# General Public License as published by the Free Software Foundation, either version 3 of the License, or 
+# (at your option) any later version.
+#
+# DTE-ERAU is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with DTE-ERAU. If not, see 
+# <https://www.gnu.org/licenses/>. 
+
+FROM python
+WORKDIR /usr/src/app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY main.py .
+CMD ["python", "main.py"]

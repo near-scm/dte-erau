@@ -1,0 +1,99 @@
+# This file is part of DTE-ERAU. Copyright 2023 Embry-Riddle Aeronautical University
+#
+# DTE-ERAU is free software: you can redistribute it and/or modify it under the terms of the GNU 
+# General Public License as published by the Free Software Foundation, either version 3 of the License, or 
+# (at your option) any later version.
+#
+# DTE-ERAU is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with DTE-ERAU. If not, see 
+# <https://www.gnu.org/licenses/>. 
+
+---
+# This is the mapping of users into groups
+groups:
+  # This is the standard "user" group for NFO that covers the basic options for the user
+  user:
+    - accounts.google.com:113244476937780643351
+
+# Defines the ACL/DTE policies
+policies:
+    # [Required] A tag that marks the category for the resource
+  - resource_group: web
+    # [Required] The resource to search for
+    resource: .*
+    # [Required] The groups that this policy applies to
+    groups:
+      - user
+    # [Optional] Which keys are needed from the ACL to fetch from DTE
+    keys:
+      - google:user:user_authentication
+      - google:network:physical_network:private_network:iap
+      - near:network:physical_network:network_analytics
+      - near:network:physical_network:active_session
+      - near:network:web_application:software
+    # [Required] This is the trust score evaluation that will run to evaluate if the user should be granted permissions
+    policy: >
+      user_authentication = dte['google:user:user_authentication'] > 0.5
+      iap = dte['google:network:physical_network:private_network:iap'] > 0.5
+      network_analytics = dte['near:network:physical_network:network_analytics'] > 0.5
+      active_session = dte['near:network:physical_network:active_session'] > 0.5
+      software = dte['near:network:web_application:software'] > 0.5
+
+      user_authentication and iap and network_analytics and active_session and software
+  - resource_group: wsw-rpc
+    resource: publish
+    groups:
+      - user
+    keys:
+      - google:user:user_authentication
+      - google:network:physical_network:private_network:iap
+      - near:network:physical_network:network_analytics
+      - near:network:physical_network:active_session
+      - near:network:web_application:software
+    policy: >
+      user_authentication = dte['google:user:user_authentication'] > 0.7
+      iap = dte['google:network:physical_network:private_network:iap'] > 0.7
+      network_analytics = dte['near:network:physical_network:network_analytics'] > 0.7
+      active_session = dte['near:network:physical_network:active_session'] > 0.7
+      software = dte['near:network:web_application:software'] > 0.7
+
+      user_authentication and iap and network_analytics and active_session and software
+  - resource_group: wsw-rpc
+    resource: .*
+    groups:
+      - user
+    keys:
+      - google:user:user_authentication
+      - google:network:physical_network:private_network:iap
+      - near:network:physical_network:network_analytics
+      - near:network:physical_network:active_session
+      - near:network:web_application:software
+    policy: >
+      user_authentication = dte['google:user:user_authentication'] > 0.5
+      iap = dte['google:network:physical_network:private_network:iap'] > 0.5
+      network_analytics = dte['near:network:physical_network:network_analytics'] > 0.5
+      active_session = dte['near:network:physical_network:active_session'] > 0.5
+      software = dte['near:network:web_application:software'] > 0.5
+
+      user_authentication and iap and network_analytics and active_session and software
+  - resource_group: wsw-sub
+    resource: .*
+    groups:
+      - user
+    keys:
+      - google:user:user_authentication
+      - google:network:physical_network:private_network:iap
+      - near:network:physical_network:network_analytics
+      - near:network:physical_network:active_session
+      - near:network:web_application:software
+    policy: >
+      user_authentication = dte['google:user:user_authentication'] > 0.5
+      iap = dte['google:network:physical_network:private_network:iap'] > 0.5
+      network_analytics = dte['near:network:physical_network:network_analytics'] > 0.5
+      active_session = dte['near:network:physical_network:active_session'] > 0.5
+      software = dte['near:network:web_application:software'] > 0.5
+
+      user_authentication and iap and network_analytics and active_session and software

@@ -1,0 +1,22 @@
+# This file is part of DTE-ERAU. Copyright 2023 Embry-Riddle Aeronautical University
+#
+# DTE-ERAU is free software: you can redistribute it and/or modify it under the terms of the GNU 
+# General Public License as published by the Free Software Foundation, either version 3 of the License, or 
+# (at your option) any later version.
+#
+# DTE-ERAU is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with DTE-ERAU. If not, see 
+# <https://www.gnu.org/licenses/>. 
+
+mapping:
+  # This mapping section describes the transformation function to mapped internal values to the required items in the ontology
+  user:user_authentication: a * 0.95
+  network:physical_network:private_network:iap: b * 0.76 + 0.25
+scores:
+  # The following are internal scores within the "Google TScP"
+  accounts.google.com:f8644e93-c4e7-47ed-941b-e4f5e3205d0d:
+    a: 0.9
+    b: 0.96
